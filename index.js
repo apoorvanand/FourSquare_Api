@@ -28,8 +28,7 @@ server.route({
         } },
     handler: () => {
 
-        return ('routes are /search/{any place name},routes are /explore/{category}/{any place name} Created by Apoorv Anand 
-                ');
+        return ('routes are /search/{any place name},routes are /explore/{category}/{any place name} Created by Apoorv Anand');
     }
 });
 server.route({
