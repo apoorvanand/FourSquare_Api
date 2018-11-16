@@ -1,81 +1,87 @@
-#!/usr/bin/groovy
+#!groovy
 
-@Library('github.com/fabric8io/fabric8-pipeline-library@master')
-def canaryVersion = "1.0.${env.BUILD_NUMBER}"
-def utils = new io.fabric8.Utils()
-def stashName = "buildpod.${env.JOB_NAME}.${env.BUILD_NUMBER}".replace('-', '_').replace('/', '_')
-def envStage = utils.environmentNamespace('stage')
-def envProd = utils.environmentNamespace('run')
-def setupScript = null
+/*
+The MIT License
 
-mavenNode {
-  checkout scm
-  if (utils.isCI()) {
+Copyright (c) 2015-, CloudBees, Inc., and a number of other of contributors
 
-    mavenCI {
-        integrationTestCmd =
-         "mvn org.apache.maven.plugins:maven-failsafe-plugin:integration-test \
-            org.apache.maven.plugins:maven-failsafe-plugin:verify \
-            -Dnamespace.use.current=false -Dnamespace.use.existing=${utils.testNamespace()} \
-            -Dit.test=*IT -DfailIfNoTests=false -DenableImageStreamDetection=true \
-            -P openshift-it"
-    }
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  } else if (utils.isCD()) {
-    /*
-     * Try to load the script ".openshiftio/Jenkinsfile.setup.groovy".
-     * If it exists it must contain two functions named "setupEnvironmentPre()"
-     * and "setupEnvironmentPost()" which should contain code that does any extra
-     * required setup in OpenShift specific for the booster. The Pre version will
-     * be called _before_ the booster objects are created while the Post version
-     * will be called afterwards.
-     */
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+node('node') {
+
+
+    currentBuild.result = "SUCCESS"
+
     try {
-      setupScript = load "${pwd()}/.openshiftio/Jenkinsfile.setup.groovy"
-    } catch (Exception ex) {
-      echo "Jenkinsfile.setup.groovy not found"
+
+       stage('Checkout'){
+
+          checkout scm
+       }
+
+       stage('Test'){
+
+         env.NODE_ENV = "test"
+
+         print "Environment will be : ${env.NODE_ENV}"
+
+         sh 'node -v'
+         sh 'npm prune'
+         sh 'npm install'
+         sh 'npm test'
+
+       }
+
+       stage('Build Docker'){
+
+            sh './dockerBuild.sh'
+       }
+
+       stage('Deploy'){
+
+         echo 'Push to Repo'
+         sh './dockerPushToRepo.sh'
+
+         echo 'ssh to web server and tell it to pull new image'
+         sh 'ssh deploy@xxxxx.xxxxx.com running/xxxxxxx/dockerRun.sh'
+
+       }
+
+       stage('Cleanup'){
+
+         echo 'prune and cleanup'
+         sh 'npm prune'
+         sh 'rm node_modules -rf'
+
+   
+       }
+
+
+
+    }
+    catch (err) {
+
+        currentBuild.result = "FAILURE"
+
+            
+        throw err
     }
 
-    echo 'NOTE: running pipelines for the first time will take longer as build and base docker images are pulled onto the node'
-    container(name: 'maven', shell:'/bin/bash') {
-      stage('Build Image') {
-        mavenCanaryRelease {
-          version = canaryVersion
-        }
-        //stash deployment manifests
-        stash includes: '**/*.yml', name: stashName
-      }
-    }
-  }
 }
-
-if (utils.isCD()) {
-  node {
-    stage('Rollout to Stage') {
-      unstash stashName
-      setupScript?.setupEnvironmentPre(envStage)
-      apply {
-        environment = envStage
-      }
-      setupScript?.setupEnvironmentPost(envStage)
-    }
-
-    stage('Approve') {
-      approve {
-        room = null
-        version = canaryVersion
-        environment = 'Stage'
-      }
-    }
-
-    stage('Rollout to Run') {
-      unstash stashName
-      setupScript?.setupEnvironmentPre(envProd)
-      apply {
-        environment = envProd
-      }
-      setupScript?.setupEnvironmentPost(envProd)
-    }
-  }
-}
-
