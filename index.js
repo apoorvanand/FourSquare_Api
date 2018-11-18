@@ -51,7 +51,7 @@ server.route({
        client_secret:secret,
        v: '20180616' },
             headers:
-   { 'Postman-Token': 'cebd56d4-c429-41fa-8793-a2bbf2e57d3c',
+   { 'Postman-Token': id,
        'Cache-Control': 'no-cache' } };
         Rp(options, (error, body) => {
             if (error)  {
@@ -96,7 +96,7 @@ server.route({
            client_secret:secret,
            v: '20180616' },
             headers:
-       { 'Postman-Token': 'cebd56d4-c429-41fa-8793-a2bbf2e57d3c',
+       { 'Postman-Token': id,
            'Cache-Control': 'no-cache' } };
         Rp(options, (body) => {
             try {
