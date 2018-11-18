@@ -47,12 +47,10 @@ server.route({
             qs:
    { near: `${encodeURIComponent(request.params.places)}`,
        limit:49,
-       client_id:id ,
-       client_secret:secret,
+       client_id:'0ILIV3AK5C4BLBT1ZGXU5CHKESDRIA52BUALLT3DTZPMK2UF',
+       client_secret:'G5VRPTPVD3B4CHJSRQ0EKNGS5A3240TJHMZ5WAWNMIJEQHXE',
        v: '20180616' },
-            headers:
-   { 'Postman-Token': id,
-       'Cache-Control': 'no-cache' } };
+      };
         Rp(options, (error, body) => {
             if (error)  {
                 throw Boom.internal('couldnot parse results', error);
@@ -69,9 +67,9 @@ server.route({
 
         }
         catch (err) {
+               throw Boom.internal('couldnot parse results', err);
             Raven.captureException(err);
-            throw Boom.internal('couldnot parse results', err);
-        }
+         }
 
 
     }
@@ -92,12 +90,10 @@ server.route({
        { near: `${encodeURIComponent(request.params.places)}`,
            section:`${encodeURIComponent(request.params.section)}`,
            limit:50,
-           client_id:id ,
-           client_secret:secret,
+           client_id:'0ILIV3AK5C4BLBT1ZGXU5CHKESDRIA52BUALLT3DTZPMK2UF' ,
+           client_secret:'G5VRPTPVD3B4CHJSRQ0EKNGS5A3240TJHMZ5WAWNMIJEQHXE',
            v: '20180616' },
-            headers:
-       { 'Postman-Token': id,
-           'Cache-Control': 'no-cache' } };
+                        };
         Rp(options, (body) => {
             try {
                 console.log(body);
