@@ -47,8 +47,8 @@ server.route({
             qs:
    { near: `${encodeURIComponent(request.params.places)}`,
        limit:49,
-       client_id:'0ILIV3AK5C4BLBT1ZGXU5CHKESDRIA52BUALLT3DTZPMK2UF' ,
-       client_secret:'G5VRPTPVD3B4CHJSRQ0EKNGS5A3240TJHMZ5WAWNMIJEQHXE',
+       client_id:id ,
+       client_secret:secret,
        v: '20180616' },
             headers:
    { 'Postman-Token': 'cebd56d4-c429-41fa-8793-a2bbf2e57d3c',
