@@ -47,8 +47,8 @@ server.route({
             qs:
    { near: `${encodeURIComponent(request.params.places)}`,
        limit:49,
-       client_id:'0ILIV3AK5C4BLBT1ZGXU5CHKESDRIA52BUALLT3DTZPMK2UF',
-       client_secret:'G5VRPTPVD3B4CHJSRQ0EKNGS5A3240TJHMZ5WAWNMIJEQHXE',
+       client_id:'UZIMNO2ITXPAF4FDY1MS4WL1HQ3W53JJ5UHSEB51UL5XDKD2',
+       client_secret:'QMZCHYVQMSGGUFELNW4IHJ4FUZDGENR21BSRXHTIQOFWW1OO',
        v: '20180616' },
       };
         Rp(options, (error, body) => {
@@ -90,8 +90,8 @@ server.route({
        { near: `${encodeURIComponent(request.params.places)}`,
            section:`${encodeURIComponent(request.params.section)}`,
            limit:50,
-           client_id:'0ILIV3AK5C4BLBT1ZGXU5CHKESDRIA52BUALLT3DTZPMK2UF' ,
-           client_secret:'G5VRPTPVD3B4CHJSRQ0EKNGS5A3240TJHMZ5WAWNMIJEQHXE',
+           client_id:'UZIMNO2ITXPAF4FDY1MS4WL1HQ3W53JJ5UHSEB51UL5XDKD2' ,
+           client_secret:'QMZCHYVQMSGGUFELNW4IHJ4FUZDGENR21BSRXHTIQOFWW1OO',
            v: '20180616' },
                         };
         Rp(options, (body) => {
