@@ -9,6 +9,11 @@ Raven.config('https://b4491d3c646d4e4c92832ee0de72ec59@sentry.io/1227821').insta
 const Rp = require('request-promise');
 const Hapi = require('hapi');
 const Boom = require('boom');
+var StatsD = require('node-dogstatsd').StatsD;
+var dogstatsd = new StatsD();
+
+# Increment a counter.
+dogstatsd.increment('page.views')
 
 
 const server = Hapi.server({
