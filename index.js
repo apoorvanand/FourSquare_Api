@@ -50,7 +50,7 @@ server.route({
             qs:
    { near: `${encodeURIComponent(request.params.places)}`,
        limit:49,
-       client_id:'JHG2Y3TXWWET4OWPKYWWI0M1THDNSD3ZK4XBNMR3XCQOZZFY',
+       client_id:'',
        client_secret:'G0SZYBEFF0R2TAFE3Z5XYWOTQIEZAFZ4WOBUYDTYHFJ2U2XA',
        v: '20180616' },
       };
