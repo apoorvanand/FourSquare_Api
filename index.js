@@ -2,6 +2,7 @@
 /*jshint esversion: 6 */
 
 'use strict';
+const tracer = require('dd-trace').init()
 
 const Raven = require('raven');
 
