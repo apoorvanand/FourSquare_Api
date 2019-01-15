@@ -4,7 +4,7 @@
   "description": "A local search Api built on Hapi.js using FourSquare Api",
   "main": "index.js",
   "scripts": {
-    "start": "DATADOG_API_KEY= 4b4c9 DEBUG=metrics node index.js",
+    "start": "node index.js",
     "lint": "eslint index.js",
     "test": "eslint index.js"
   },
